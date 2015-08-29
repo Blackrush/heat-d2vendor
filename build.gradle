@@ -1,0 +1,49 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+group = 'org.heat.dofus'
+version = '2.27.3-0'
+
+apply from: 'gradle/remote.gradle'
+
+ext {
+    slf4j = '1.7.+'
+    heatUtil = '0.5.+'
+    netty = '4.0.+'
+    junit = '4.11'
+    mockito = '1.9.+'
+}
+
+dependencies {
+    compile "org.slf4j:slf4j-api:$slf4j"
+    compile "org.heat:util-io:$heatUtil"
+    compile("io.netty:netty-codec:$netty") {
+        exclude module: 'protobuf-java'
+        exclude module: 'jboss-marshalling'
+        exclude module: 'jzlib'
+    }
+
+    testCompile "junit:junit:$junit"
+    testCompile "org.mockito:mockito-core:$mockito"
+    testCompile "org.heat:util-testing:$heatUtil"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/generated-sources'
+        }
+    }
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.artifactId = 'd2vendor'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
